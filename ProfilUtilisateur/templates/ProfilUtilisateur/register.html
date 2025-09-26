@@ -1,0 +1,192 @@
+{% extends 'ProfilUtilisateur/base.html' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-lg rounded">
+        <div class="card-header bg-primary text-white text-center">
+          <h2>Inscription</h2>
+          <p class="mb-0">Rejoignez notre communauté en quelques étapes simples.</p>
+        </div>
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Nom d'utilisateur -->
+            <div class="form-group">
+              <label for="username" class="font-weight-bold">Nom d'utilisateur :</label>
+              <input type="text" name="username" id="username" class="form-control" placeholder="Choisissez un nom d'utilisateur unique" required>
+            </div>
+            
+            <!-- Email -->
+            <div class="form-group">
+              <label for="email" class="font-weight-bold">Email :</label>
+              <input type="email" name="email" id="email" class="form-control" placeholder="Entrez votre email" required>
+            </div>
+            
+            <!-- Mot de passe -->
+            <div class="form-group">
+              <label for="password1" class="font-weight-bold">Mot de passe :</label>
+              <div class="input-group">
+                <input type="password" name="password1" id="password1" class="form-control" placeholder="Créez un mot de passe sécurisé" required>
+                <div class="input-group-append">
+                  <span class="input-group-text" onclick="togglePassword('password1', this)" style="cursor:pointer;">
+                    <i class="fas fa-eye"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="password2" class="font-weight-bold">Confirmer le mot de passe :</label>
+              <div class="input-group">
+                <input type="password" name="password2" id="password2" class="form-control" placeholder="Confirmez votre mot de passe" required>
+                <div class="input-group-append">
+                  <span class="input-group-text" onclick="togglePassword('password2', this)" style="cursor:pointer;">
+                    <i class="fas fa-eye"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Informations personnelles supplémentaires -->
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="first_name" class="font-weight-bold">Prénom :</label>
+                <input type="text" name="first_name" id="first_name" class="form-control" placeholder="Votre prénom">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="last_name" class="font-weight-bold">Nom :</label>
+                <input type="text" name="last_name" id="last_name" class="form-control" placeholder="Votre nom">
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="date_naissance" class="font-weight-bold">Date de naissance :</label>
+                <input type="date" name="date_naissance" id="date_naissance" class="form-control">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="telephone" class="font-weight-bold">Téléphone :</label>
+                <input type="text" name="telephone" id="telephone" class="form-control" placeholder="Votre numéro de téléphone">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="adresse" class="font-weight-bold">Adresse :</label>
+              <input type="text" name="adresse" id="adresse" class="form-control" placeholder="Votre adresse complète">
+            </div>
+            
+            <div class="form-group">
+              <label for="bio" class="font-weight-bold">Biographie :</label>
+              <textarea name="bio" id="bio" class="form-control" placeholder="Parlez un peu de vous"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="genre" class="font-weight-bold">Genre :</label>
+              <select name="genre" id="genre" class="form-control">
+                <option value="" disabled selected>Choisissez...</option>
+                <option value="M">Masculin</option>
+                <option value="F">Féminin</option>
+              </select>
+            </div>
+            
+            <!-- Images -->
+            <div class="form-group">
+              <label for="image" class="font-weight-bold">Image de profil :</label>
+              <input type="file" name="image" id="image" class="form-control-file">
+            </div>
+            <div class="form-group">
+              <label for="cover_image" class="font-weight-bold">Image de couverture :</label>
+              <input type="file" name="cover_image" id="cover_image" class="form-control-file">
+            </div>
+
+            <!-- Champ pour les réseaux sociaux -->
+            <div class="form-group">
+              <label class="font-weight-bold">Réseaux Sociaux :</label>
+              <div class="form-row">
+                <div class="form-group col-md-4">
+                  <label for="facebook" class="small">Facebook</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fab fa-facebook-f"></i></span>
+                    </div>
+                    <input type="text" name="facebook" id="facebook" class="form-control" placeholder="Nom d'utilisateur Facebook">
+                  </div>
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="instagram" class="small">Instagram</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fab fa-instagram"></i></span>
+                    </div>
+                    <input type="text" name="instagram" id="instagram" class="form-control" placeholder="Nom d'utilisateur Instagram">
+                  </div>
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="twitter" class="small">Twitter/X</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fab fa-x-twitter"></i></span>
+                    </div>
+                    <input type="text" name="twitter" id="twitter" class="form-control" placeholder="Nom d'utilisateur Twitter/X">
+                  </div>
+                </div>
+              </div>
+              <small class="text-muted">Saisissez uniquement le nom d'utilisateur, pas l'URL complète.</small>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-block font-weight-bold">S'inscrire</button>
+          </form>
+        </div>
+        <div class="card-footer bg-light text-center">
+          <p>Déjà inscrit ? <a href="{% url 'login' %}" class="text-primary font-weight-bold">Connectez-vous ici</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function togglePassword(fieldId, el) {
+  var input = document.getElementById(fieldId);
+  var icon = el.querySelector('i');
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.classList.remove('fa-eye');
+    icon.classList.add('fa-eye-slash');
+  } else {
+    input.type = 'password';
+    icon.classList.remove('fa-eye-slash');
+    icon.classList.add('fa-eye');
+  }
+}
+</script>
+<!-- FontAwesome CDN for eye icon -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+  @media (max-width: 768px) {
+    .btn-lg, .btn-block, .btn, button {
+      font-size: 1.1rem;
+      padding: 0.75rem 1rem;
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+    .card h2, .card h3, h2, h3 {
+      font-size: 1.3rem;
+    }
+    .card p, .btn, p, label, input, select, textarea {
+      font-size: 1rem;
+    }
+    .d-flex.gap-3, .d-flex.gap-2, .row, .form-row {
+      flex-direction: column !important;
+      gap: 0.5rem !important;
+    }
+    .container, .card, .form-group, .form-control {
+      padding-left: 0.5rem !important;
+      padding-right: 0.5rem !important;
+    }
+  }
+</style>
+{% endblock %}

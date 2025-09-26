@@ -1,0 +1,190 @@
+{% extends 'ProfilUtilisateur/base.html' %}
+{% load static %}
+
+{% block title %}Nos Services - MOYA{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+  <!-- En-tête des services -->
+  <div class="jumbotron bg-primary text-white text-center mb-0">
+    <h1 class="display-4">Nos Services</h1>
+    <p class="lead">Découvrez l'ensemble de nos solutions innovantes</p>
+  </div>
+
+  <!-- Services principaux -->
+  <div class="container mt-5">
+    <div class="row">
+      <!-- Service 1 -->
+      <div class="col-md-6 mb-4">
+        <div class="card shadow-lg hover-card">
+          <div class="row no-gutters">
+            <div class="col-md-4">
+              <img src="{% static 'ProfilUtilisateur/images/1000001156.jpg' %}" class="card-img h-100" alt="Gestion de Profil" style="object-fit: cover;">
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title text-primary">
+                  <i class="fas fa-user-circle mr-2"></i>Gestion de Profil
+                </h5>
+                <p class="card-text">Créez et gérez votre profil professionnel avec des outils intuitifs et personnalisables.</p>
+                <ul class="list-unstyled">
+                  <li><i class="fas fa-check text-success mr-2"></i>Personnalisation complète</li>
+                  <li><i class="fas fa-check text-success mr-2"></i>Mise à jour en temps réel</li>
+                  <li><i class="fas fa-check text-success mr-2"></i>Statistiques détaillées</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Service 2 -->
+      <div class="col-md-6 mb-4">
+        <div class="card shadow-lg hover-card">
+          <div class="row no-gutters">
+            <div class="col-md-4">
+              <img src="{% static 'ProfilUtilisateur/images/1000001195.jpg' %}" class="card-img h-100" alt="Réseau Social" style="object-fit: cover;">
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title text-primary">
+                  <i class="fas fa-network-wired mr-2"></i>Réseau Social
+                </h5>
+                <p class="card-text">Connectez-vous avec d'autres professionnels et développez votre réseau.</p>
+                <ul class="list-unstyled">
+                  <li><i class="fas fa-check text-success mr-2"></i>Mise en relation intelligente</li>
+                  <li><i class="fas fa-check text-success mr-2"></i>Partage de contenu</li>
+                  <li><i class="fas fa-check text-success mr-2"></i>Messagerie intégrée</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Service 3 -->
+      <div class="col-md-6 mb-4">
+        <div class="card shadow-lg hover-card">
+          <div class="row no-gutters">
+            <div class="col-md-4">
+              <img src="{% static 'ProfilUtilisateur/images/1000001659.jpg' %}" class="card-img h-100" alt="Analytics" style="object-fit: cover;">
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title text-primary">
+                  <i class="fas fa-chart-line mr-2"></i>Analytics
+                </h5>
+                <p class="card-text">Analysez vos performances et optimisez votre présence en ligne.</p>
+                <ul class="list-unstyled">
+                  <li><i class="fas fa-check text-success mr-2"></i>Tableaux de bord personnalisés</li>
+                  <li><i class="fas fa-check text-success mr-2"></i>Rapports détaillés</li>
+                  <li><i class="fas fa-check text-success mr-2"></i>Recommandations intelligentes</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Service 4 -->
+      <div class="col-md-6 mb-4">
+        <div class="card shadow-lg hover-card">
+          <div class="row no-gutters">
+            <div class="col-md-4">
+              <img src="{% static 'ProfilUtilisateur/images/1000001156.jpg' %}" class="card-img h-100" alt="Sécurité" style="object-fit: cover;">
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title text-primary">
+                  <i class="fas fa-shield-alt mr-2"></i>Sécurité Avancée
+                </h5>
+                <p class="card-text">Protégez vos données avec notre système de sécurité de pointe.</p>
+                <ul class="list-unstyled">
+                  <li><i class="fas fa-check text-success mr-2"></i>Chiffrement de bout en bout</li>
+                  <li><i class="fas fa-check text-success mr-2"></i>Authentification à deux facteurs</li>
+                  <li><i class="fas fa-check text-success mr-2"></i>Surveillance continue</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fonctionnalités supplémentaires -->
+  <div class="container mt-5">
+    <h2 class="text-center mb-4">Fonctionnalités Complémentaires</h2>
+    <div class="row">
+      <div class="col-md-3 mb-4">
+        <div class="card text-center shadow-sm hover-card">
+          <div class="card-body">
+            <i class="fas fa-mobile-alt fa-3x text-primary mb-3"></i>
+            <h5>Application Mobile</h5>
+            <p>Accédez à vos services depuis n'importe où</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-4">
+        <div class="card text-center shadow-sm hover-card">
+          <div class="card-body">
+            <i class="fas fa-cloud fa-3x text-primary mb-3"></i>
+            <h5>Stockage Cloud</h5>
+            <p>Sauvegardez vos données en toute sécurité</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-4">
+        <div class="card text-center shadow-sm hover-card">
+          <div class="card-body">
+            <i class="fas fa-bell fa-3x text-primary mb-3"></i>
+            <h5>Notifications</h5>
+            <p>Restez informé en temps réel</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-4">
+        <div class="card text-center shadow-sm hover-card">
+          <div class="card-body">
+            <i class="fas fa-headset fa-3x text-primary mb-3"></i>
+            <h5>Support 24/7</h5>
+            <p>Une équipe à votre écoute</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Call to Action -->
+  <div class="container mt-5 mb-5">
+    <div class="card bg-primary text-white text-center shadow">
+      <div class="card-body py-5">
+        <h2 class="display-4">Prêt à commencer ?</h2>
+        <p class="lead">Découvrez tous nos services dès maintenant</p>
+        {% if not user.is_authenticated %}
+          <a href="{% url 'register' %}" class="btn btn-light btn-lg mt-3">S'inscrire maintenant</a>
+        {% else %}
+          <a href="{% url 'profile' slug=user.slug %}" class="btn btn-light btn-lg mt-3">Accéder à mon profil</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .hover-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;
+  }
+  .card-img {
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+  }
+  .jumbotron {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  }
+</style>
+{% endblock %} 

@@ -1,0 +1,293 @@
+{% extends 'ProfilUtilisateur/base.html' %}
+
+{% block title %}Profil de {{ profile.username }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="position-relative text-center mb-4 fade-in">
+      {% if profile.cover_image %}
+          <img id="coverPreview" src="{{ profile.cover_image.url }}" alt="Image de couverture"
+              class="img-fluid rounded shadow" style="width: 100%; max-height: 250px; object-fit: cover;">
+      {% endif %}
+
+    <!-- Icône de modification de la photo de couverture (visible uniquement au propriétaire) -->
+    {% if user.is_authenticated and user == profile %}
+    <label for="coverImageInput" class="btn btn-light position-absolute cover-edit-btn" style="top: 10px; right: 10px; cursor: pointer;">
+      <i class="fas fa-pencil-alt"></i>
+    </label>
+    {% endif %}
+      <input type="file" id="coverImageInput" class="d-none" accept="image/*">
+
+      <!-- Formulaire pour envoi de l'image croppée -->
+      <form id="croppedImageForm" method="post" action="{% url 'change_profile_image' %}">
+        {% csrf_token %}
+        <input type="hidden" name="cropped_image" id="croppedImageData">
+        <input type="hidden" name="image_type" id="croppedImageType">
+      </form>
+      <!-- Photo de profil intégrée à la couverture -->
+      <div class="position-absolute" style="bottom: -60px; left: 50%; transform: translateX(-50%);">
+      {% if profile.image %}
+        <img id="profilePreview" src="{{ profile.image.url }}" alt="Image de profil" class="rounded-circle img-thumbnail border shadow"
+          style="width: 120px; height: 120px; object-fit: cover;">
+          {% else %}
+              <div class="rounded-circle border bg-light d-flex align-items-center justify-content-center shadow"
+                  style="width: 120px; height: 120px;">
+                  <p class="text-muted">Pas d'image</p>
+              </div>
+          {% endif %}
+      </div>
+    <!-- Bouton édition image profil (superposé) - visible uniquement au propriétaire -->
+    {% if user.is_authenticated and user == profile %}
+    <label for="profileImageInput" class="btn btn-light position-absolute" style="bottom: -120px; left: 50%; transform: translateX(60%); cursor: pointer;">
+      <i class="fas fa-pencil-alt"></i>
+    </label>
+    {% endif %}
+    <input type="file" id="profileImageInput" class="d-none" accept="image/*">
+  </div><br><br>
+  <!-- Section principale du profil -->
+  <div class="card shadow p-4 text-center">
+    <h2 class="text-primary mt-4">{{ profile.username }}</h2>
+    <p class="text-muted">{{ profile.telephone }}</p>
+    <p class="text-muted">{{ profile.adresse }}</p>
+    {% if user.is_authenticated and user == profile %}
+      <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary mt-2">Modifier le profil</a>
+    {% endif %}
+  </div>
+
+  <!-- Bio -->
+  <div class="card shadow mt-4 p-4 fade-in">
+    <h3 class="text-primary">Bio</h3>
+    <p>{{ profile.bio }}</p>
+  </div>
+
+  <!-- Réseaux sociaux avec affichage dynamique -->
+  <div class="card shadow mt-4 p-4 text-center">
+    <h3 class="text-primary">Retrouvez-moi</h3>
+    <div class="d-flex justify-content-center gap-3">
+      {% if profile.reseaux_sociaux %}
+        {% if profile.reseaux_sociaux.facebook %}
+          <a href="https://facebook.com/{{ profile.reseaux_sociaux.facebook }}" class="btn btn-outline-primary" target="_blank">
+            <i class="fab fa-facebook-f"></i> Facebook
+          </a>
+        {% endif %}
+        {% if profile.reseaux_sociaux.instagram %}
+          <a href="https://instagram.com/{{ profile.reseaux_sociaux.instagram }}" class="btn btn-outline-danger" target="_blank">
+            <i class="fab fa-instagram"></i> Instagram
+          </a>
+        {% endif %}
+        {% if profile.reseaux_sociaux.twitter %}
+          <a href="https://twitter.com/{{ profile.reseaux_sociaux.twitter }}" class="btn btn-outline-info" target="_blank">
+            <i class="fab fa-x-twitter"></i> Twitter/X
+          </a>
+        {% endif %}
+        {% if not profile.reseaux_sociaux.facebook and not profile.reseaux_sociaux.instagram and not profile.reseaux_sociaux.twitter %}
+          <p class="text-muted">Aucun réseau social renseigné.</p>
+        {% endif %}
+      {% else %}
+        <p class="text-muted">Aucun réseau social renseigné.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Liens personnels -->
+  <div class="card shadow mt-4 p-4 text-center">
+    <h3 class="text-primary">Liens</h3>
+    <div class="d-flex flex-column flex-md-row justify-content-center gap-2 gap-md-3">
+      <a href="{{ profile.shop_link }}" class="btn link-btn shop-btn flex-fill mb-2 mb-md-0" target="_blank">
+        <i class="fas fa-store me-2"></i> Voir ma boutique
+      </a>
+      <a href="{{ profile.website_link }}" class="btn link-btn site-btn flex-fill mb-2 mb-md-0" target="_blank">
+        <i class="fas fa-globe me-2"></i> Mon site web
+      </a>
+      {% if user.is_authenticated and user.is_superuser %}
+        <a href="/admin/" class="btn btn-dark btn-block btn-lg flex-fill">Accéder à l'espace admin</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- input handlers are defined below with Cropper integration -->
+
+<!-- Cropper.js resources (CDN) -->
+<link  href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+<!-- Modal simple pour rogner l'image -->
+<div id="cropModal" class="crop-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:1050; align-items:center; justify-content:center;">
+  <div style="background:#fff; padding:12px; max-width:900px; width:95%; border-radius:6px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <h5 style="margin:0">Rogner l'image</h5>
+        <!-- rotate controls -->
+        <div style="display:flex; gap:6px; margin-left:8px;">
+          <button id="rotateLeft" class="btn btn-sm btn-outline-secondary" title="Tourner à gauche"><i class="fas fa-rotate-left"></i></button>
+          <button id="rotateRight" class="btn btn-sm btn-outline-secondary" title="Tourner à droite"><i class="fas fa-rotate-right"></i></button>
+        </div>
+      </div>
+      <button id="closeCrop" class="btn btn-sm btn-secondary">Fermer</button>
+    </div>
+    <div style="max-height:70vh; overflow:auto;">
+      <img id="cropImage" src="" style="max-width:100%; display:block; margin:0 auto;">
+    </div>
+    <div class="mt-2 text-end">
+      <button id="cropCancel" class="btn btn-light">Annuler</button>
+      <button id="cropSave" class="btn btn-primary">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Utilitaires
+  let cropper = null;
+  const cropModal = document.getElementById('cropModal');
+  const cropImage = document.getElementById('cropImage');
+  const croppedImageInput = document.getElementById('croppedImageData');
+  const croppedImageType = document.getElementById('croppedImageType');
+
+  function openCropModal(dataUrl, type) {
+    cropImage.src = dataUrl;
+    croppedImageType.value = type;
+    cropModal.style.display = 'flex';
+    // init cropper after image loads
+    cropImage.onload = function () {
+      if (cropper) { cropper.destroy(); }
+      const aspect = (type === 'cover') ? 16/6 : 1; // cover wide, profile square
+      cropper = new Cropper(cropImage, { aspectRatio: aspect, viewMode: 1, autoCropArea: 1 });
+    };
+  }
+
+  document.getElementById('closeCrop').addEventListener('click', function () {
+    if (cropper) { cropper.destroy(); cropper = null; }
+    cropModal.style.display = 'none';
+  });
+  document.getElementById('cropCancel').addEventListener('click', function () {
+    if (cropper) { cropper.destroy(); cropper = null; }
+    cropModal.style.display = 'none';
+  });
+
+  // Rotate controls
+  var rotateLeftBtn = document.getElementById('rotateLeft');
+  var rotateRightBtn = document.getElementById('rotateRight');
+  if (rotateLeftBtn) rotateLeftBtn.addEventListener('click', function () { if (cropper) cropper.rotate(-90); });
+  if (rotateRightBtn) rotateRightBtn.addEventListener('click', function () { if (cropper) cropper.rotate(90); });
+
+  document.getElementById('cropSave').addEventListener('click', function () {
+    if (!cropper) return;
+    var type = croppedImageType.value || 'profile';
+    var canvas;
+    if (type === 'profile') {
+      // square profile image
+      canvas = cropper.getCroppedCanvas({ width: 400, height: 400 });
+    } else {
+      // cover: allow free aspect, but set a max width to keep reasonable size
+      canvas = cropper.getCroppedCanvas({ maxWidth: 1600 });
+    }
+    var dataUrl = canvas.toDataURL('image/png');
+    // set hidden input and submit
+    croppedImageInput.value = dataUrl;
+    document.getElementById('croppedImageForm').submit();
+  });
+
+  // Profile image input handler
+  document.getElementById('profileImageInput').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (ev) {
+      openCropModal(ev.target.result, 'profile');
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Also allow clicking the preview to change
+  const profilePreview = document.getElementById('profilePreview');
+  if (profilePreview) {
+    profilePreview.style.cursor = 'pointer';
+    profilePreview.addEventListener('click', function () { document.getElementById('profileImageInput').click(); });
+  }
+
+  // For cover input - when user selects file, we already call openCropModal above by changing earlier handler
+  document.getElementById('coverImageInput').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (ev) {
+      openCropModal(ev.target.result, 'cover');
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Modified openCropModal to allow free aspect for cover and square for profile
+  function openCropModal(dataUrl, type) {
+    cropImage.src = dataUrl;
+    croppedImageType.value = type;
+    cropModal.style.display = 'flex';
+    // init cropper after image loads
+    cropImage.onload = function () {
+      if (cropper) { cropper.destroy(); }
+      var options = { viewMode: 1, autoCropArea: 1, movable: true, zoomable: true, rotatable: true, scalable: true };
+      if (type === 'profile') {
+        options.aspectRatio = 1; // square for profile
+      } else {
+        // cover: do not force aspect ratio (free crop)
+      }
+      cropper = new Cropper(cropImage, options);
+    };
+  }
+</script>
+
+<style>
+  @media (max-width: 768px) {
+    .btn-lg, .btn-block {
+      font-size: 1.1rem;
+      padding: 0.75rem 1rem;
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+    .card h2, .card h3 {
+      font-size: 1.3rem;
+    }
+    .card p, .btn {
+      font-size: 1rem;
+    }
+    .d-flex.gap-3, .d-flex.gap-2 {
+      flex-direction: column !important;
+      gap: 0.5rem !important;
+    }
+    .cover-edit-btn {
+      padding: 0.3rem 0.7rem !important;
+      font-size: 1.1rem !important;
+      top: 5px !important;
+      right: 5px !important;
+      border-radius: 50% !important;
+      min-width: 40px;
+      min-height: 40px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  /* Link buttons (modern pill style) */
+  .link-btn {
+    border-radius: 999px;
+    padding: 0.65rem 1.1rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #fff !important;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  }
+  .shop-btn { background: linear-gradient(135deg,#2ecc71,#27ae60); }
+  .site-btn { background: linear-gradient(135deg,#f39c12,#f1c40f); color: #212529 !important; }
+  .link-btn i { font-size: 0.95rem; }
+  @media (max-width: 576px) {
+    .link-btn { font-size: 0.95rem; padding: 0.6rem; }
+  }
+</style>
+
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'ProfilUtilisateur/base.html' %}
+
+{% block title %}Liste des Utilisateurs{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4 text-center text-primary">Explorez les Utilisateurs</h2>
+
+  <!-- Section de recherche -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <form method="get" action="" class="d-flex">
+        <input type="text" name="search" class="form-control me-2" placeholder="Rechercher un utilisateur..." value="{{ request.GET.search }}">
+        <button type="submit" class="btn btn-primary">Rechercher</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Section d'affichage des utilisateurs -->
+  <div class="row">
+    {% for user in users %}
+    <div class="col-md-4 mb-4">
+      <div class="card shadow-lg h-100">
+        {% if user.image %}
+        <img src="{{ user.image.url }}" alt="Image de {{ user.username }}" 
+             class="card-img-top rounded-circle mx-auto mt-3 border" 
+             style="width: 120px; height: 120px; object-fit: cover;">
+        {% endif %}
+        <div class="card-body text-center">
+          <h5 class="card-title text-primary">{{ user.username }}</h5>
+          <p class="card-text text-muted">
+            {{ user.bio|default:"Aucune biographie ajoutée" }}
+          </p>
+          <p class="text-secondary">
+            <i class="fas fa-envelope"></i> {{ user.email }}
+          </p>
+          <a href="{% url 'profile' user.slug %}" class="btn btn-outline-primary btn-sm">Voir le profil</a>
+        </div>
+        <div class="card-footer text-center bg-light">
+          <small class="text-muted">Inscrit le {{ user.date_joined|date:"d M Y" }}</small>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-center text-muted">Aucun utilisateur trouvé.</p>
+    {% endfor %}
+  </div>
+  <!-- Section statistiques -->
+  <div class="card shadow mt-5">
+    <div class="card-body text-center">
+      <h5 class="text-primary">Statistiques des Utilisateurs</h5>
+      <div class="row mt-4">
+        <div class="col-md-4">
+          <h6 class="text-secondary">Total des Utilisateurs</h6>
+          <p class="text-success display-4">+5547</p>
+        </div>
+        <div class="col-md-4">
+          <h6 class="text-secondary">Hommes</h6>
+          <p class="text-info display-4">2523</p>
+        </div>
+        <div class="col-md-4">
+          <h6 class="text-secondary">Femmes</h6>
+          <p class="text-info display-4">3024</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'ProfilUtilisateur/base.html' %}
+
+{% block title %}Contact - MOYA{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="jumbotron bg-dark text-white text-center shadow rounded">
+    <h1 class="display-4">Contactez-nous</h1>
+    <p class="lead">Notre équipe est à votre disposition pour toute question ou assistance.</p>
+    <hr class="bg-light">
+  </div>
+
+  <form method="POST" class="shadow p-4 rounded bg-light">
+    {% csrf_token %}
+    <div class="form-group">
+      <label>Nom :</label>
+      <input type="text" class="form-control" placeholder="Votre nom" required>
+    </div>
+    <div class="form-group">
+      <label>Email :</label>
+      <input type="email" class="form-control" placeholder="Votre email" required>
+    </div>
+    <div class="form-group">
+      <label>Message :</label>
+      <textarea class="form-control" rows="4" placeholder="Votre message" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-paper-plane"></i> Envoyer</button>
+  </form>
+</div>
+{% endblock %}

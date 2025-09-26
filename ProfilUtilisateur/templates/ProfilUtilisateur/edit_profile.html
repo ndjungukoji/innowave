@@ -1,0 +1,103 @@
+{% extends 'ProfilUtilisateur/base.html' %}
+
+{% block title %}Modifier le Profil{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-lg rounded">
+        <div class="card-header bg-primary text-white text-center">
+          <h2>Modifier votre Profil</h2>
+          <p class="mb-0">Mettez à jour vos informations personnelles et vos paramètres ici.</p>
+        </div>
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Section Prévisualisation Image -->
+            <div class="text-center mb-4">
+              {% if user.image %}
+              <img src="{{ user.image.url }}" alt="Image de profil"  class="rounded-circle img-thumbnail shadow"
+                   style="width: 150px; height: 150px; object-fit: cover;">
+              {% else %}
+              <div class="rounded-circle bg-light border d-flex align-items-center justify-content-center"
+                   style="width: 150px; height: 150px;">
+                <p class="text-muted">Pas d'image</p>
+              </div>
+              {% endif %}
+              <div class="mt-2">
+                <label for="image" class="font-weight-bold">Changer l'image de profil :</label>
+                <input type="file" name="image" id="image" class="form-control-file">
+              </div>
+            </div>
+
+            <!-- Prénom et Nom -->
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="first_name" class="font-weight-bold">Prénom :</label>
+                <input type="text" name="first_name" id="first_name" class="form-control" value="{{ user.first_name }}" placeholder="Votre prénom">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="last_name" class="font-weight-bold">Nom :</label>
+                <input type="text" name="last_name" id="last_name" class="form-control" value="{{ user.last_name }}" placeholder="Votre nom">
+              </div>
+            </div>
+            
+            <!-- Bio -->
+            <div class="form-group">
+              <label for="bio" class="font-weight-bold">Bio :</label>
+              <textarea name="bio" id="bio" class="form-control" rows="3" placeholder="Parlez un peu de vous...">{{ user.bio }}</textarea>
+            </div>
+            
+            <!-- Téléphone et Adresse -->
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="telephone" class="font-weight-bold">Téléphone :</label>
+                <input type="text" name="telephone" id="telephone" class="form-control" value="{{ user.telephone }}" placeholder="Votre téléphone">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="adresse" class="font-weight-bold">Adresse :</label>
+                <input type="text" name="adresse" id="adresse" class="form-control" value="{{ user.adresse }}" placeholder="Votre adresse">
+              </div>
+            </div>
+            
+            <!-- Date de naissance -->
+            <div class="form-group">
+              <label for="date_naissance" class="font-weight-bold">Date de naissance :</label>
+              <input type="date" name="date_naissance" id="date_naissance" class="form-control" value="{{ user.date_naissance }}">
+            </div>
+            
+            <!-- Genre -->
+            <div class="form-group">
+              <label for="genre" class="font-weight-bold">Genre :</label>
+              <select name="genre" id="genre" class="form-control">
+                <option value="M" {% if user.genre == "M" %}selected{% endif %}>Masculin</option>
+                <option value="F" {% if user.genre == "F" %}selected{% endif %}>Féminin</option>
+              </select>
+            </div>
+            
+            <!-- Bouton Enregistrer -->
+            <button type="submit" class="btn btn-success btn-block font-weight-bold">Enregistrer les modifications</button>
+          </form>
+        </div>
+        <div class="card-footer bg-light text-center">
+          <a href="{% url 'profile' user.slug %}" class="btn btn-secondary font-weight-bold">Retour au Profil</a>
+        </div>
+      </div>
+
+      <!-- Section Supplémentaire : Suppression du compte -->
+      <div class="card shadow-lg rounded mt-4">
+        <div class="card-body text-center">
+          <h4 class="text-danger">Supprimer votre compte</h4>
+          <p class="text-muted">Cette action est irréversible. Veuillez confirmer pour supprimer votre compte.</p>
+          <form method="post" action="{% url 'delete_account' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger font-weight-bold">Supprimer mon compte</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

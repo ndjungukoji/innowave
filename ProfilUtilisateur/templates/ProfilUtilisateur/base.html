@@ -1,0 +1,238 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Gestion Utilisateur{% endblock %}</title>
+
+  <!-- Bootstrap & Font Awesome -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* Mode Sombre */
+    body {
+      background-color: #f8f9fa;
+      color: #343a40;
+      padding-top: 120px; /* espace augmenté pour navbar plus haute */
+      transition: background 0.3s, color 0.3s;
+    }
+    .dark-mode {
+      background-color: #212529;
+      color: #0e0f0f;
+    }
+
+    /* Navbar: light background so logo is visible */
+      .navbar {
+        background: #ffffff; /* white background for contrast with logo */
+        border-bottom: 1px solid rgba(0,0,0,0.06);
+        min-height: 116px; /* assurer espace vertical suffisant pour logo 100px */
+      }
+      .navbar-brand { display:flex; align-items:center; }
+      .navbar .nav-link {
+        color: #343a40 !important;
+      }
+      .navbar .nav-link:hover, .navbar .nav-link:focus {
+        color: #0056b3 !important;
+      }
+      .navbar .dropdown-menu {
+        min-width: 180px;
+      }
+
+    /* Bouton mode sombre */
+    .btn-toggle-dark {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1100;
+      /* responsive size: min 40px, preferred 5% vw, max 64px */
+      width: clamp(40px, 5vw, 64px);
+      height: clamp(40px, 5vw, 64px);
+      padding: 0.5rem;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #6c757d; /* bootstrap secondary */
+      color: #fff;
+      border: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+      transition: background 0.2s, transform 0.12s;
+      cursor: pointer;
+    }
+    .btn-toggle-dark i { font-size: clamp(16px, 2.6vw, 22px); }
+    .btn-toggle-dark:focus { outline: 3px solid rgba(0,123,255,0.25); }
+    .btn-toggle-dark:hover { transform: translateY(-2px); }
+    /* Dark-mode variant of the button (optional visual tweak) */
+    .dark-mode .btn-toggle-dark { background: #f8f9fa; color: #212529; }
+
+    /* Animation des cartes */
+    .card:hover {
+      transform: scale(1.05);
+      transition: 0.3s;
+    }
+
+  @media (max-width: 768px) {
+      .btn-lg, .btn-block, .btn, button {
+        font-size: 1.1rem;
+        padding: 0.75rem 1rem;
+        width: 100%;
+        margin-bottom: 0.5rem;
+      }
+      .card h2, .card h3, h2, h3 {
+        font-size: 1.3rem;
+      }
+      .card p, .btn, p, label, input, select, textarea {
+        font-size: 1rem;
+      }
+      .d-flex.gap-3, .d-flex.gap-2, .row, .form-row {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+      }
+      .container, .card, .form-group, .form-control {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+      }
+      .navbar-toggler {
+        padding: 0.3rem 0.7rem !important;
+        font-size: 1.2rem !important;
+        border-radius: 0.3rem !important;
+        min-width: 44px;
+        min-height: 44px;
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+  /* Responsive: améliorer visibilité sur petits écrans */
+  body { padding-top: 100px; }
+  .navbar { min-height: 72px; padding-top:8px; padding-bottom:8px; }
+  .navbar-brand img { height: 64px !important; }
+  .navbar .nav-link { font-size: 0.98rem !important; }
+  /* Ensure toggler icon is dark for visibility on white background */
+  .navbar-light .navbar-toggler {
+    border-color: rgba(0,0,0,0.1);
+  }
+  .navbar-light .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke='rgba(52,58,64,0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/></svg>") !important;
+  }
+    }
+  </style>
+  
+</head>
+<body>
+
+  <!-- Navbar améliorée -->
+  <nav class="navbar navbar-expand-lg navbar-light shadow fixed-top">
+    <div class="container">
+    <a class="navbar-brand" href="{% url 'home' %}">
+    <img src="{% static 'ProfilUtilisateur/images/INNOWAVE.png' %}" alt="Innowave" style="height:100px; object-fit:contain; margin-right:8px;"> 
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Basculer la navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+  
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <!-- Boutons principaux -->
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home"></i> Accueil</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'apropos' %}"><i class="fas fa-info-circle"></i> À propos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'contact' %}"><i class="fas fa-envelope"></i> Contact</a>
+          </li>
+
+          {% if user.is_authenticated %}
+            <!-- Menu déroulant Mon Compte -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button" data-toggle="dropdown">
+                <i class="fas fa-user"></i> Mon Compte
+              </a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="{% url 'profile' slug=user.slug %}"><i class="fas fa-user-circle"></i> Voir mon profil</a>
+                <a class="dropdown-item" href="#"><i class="fas fa-cogs"></i> Paramètres</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item text-danger" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+              </div>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Connexion</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'register' %}"><i class="fas fa-user-plus"></i> Inscription</a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Contenu principal -->
+  <div class="container">
+    {% block content %}
+    {% endblock %}
+  </div>
+
+  <!-- Footer -->
+  <footer class="mt-5 text-center bg-dark text-white py-3">
+    <p>&copy; 2025 MOYA SA. Tous droits réservés. heritierndjungu91@gmail.com ,louismitshabu4@gmail.com</p>
+    <p>
+      <a href="#" class="text-info">Confidentialité</a> | 
+      <a href="{% url 'terms' %}" class="text-info">Termes</a> | 
+      <a href="{% url 'contact' %}" class="text-info">Contactez-nous</a>
+    </p>
+  </footer>
+
+  <!-- Mode sombre toggle (circular, responsive icon) -->
+  <button id="btn-dark" class="btn-toggle-dark" aria-pressed="false" aria-label="Basculer le mode sombre">
+    <i id="btn-dark-icon" class="fas fa-moon"></i>
+  </button>
+
+  <script>
+    (function () {
+      var btn = document.getElementById('btn-dark');
+      var icon = document.getElementById('btn-dark-icon');
+      function setState(isDark) {
+        document.body.classList.toggle('dark-mode', isDark);
+        btn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+        // Swap icon: moon for dark, sun for light
+        if (isDark) {
+          icon.classList.remove('fa-moon');
+          icon.classList.add('fa-sun');
+        } else {
+          icon.classList.remove('fa-sun');
+          icon.classList.add('fa-moon');
+        }
+      }
+
+      // Initialize from saved preference (localStorage) if available
+      var saved = localStorage.getItem('dark-mode-enabled');
+      var isDark = saved === '1' || (saved === null && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      setState(isDark);
+
+      btn.addEventListener('click', function () {
+        isDark = !document.body.classList.contains('dark-mode');
+        setState(isDark);
+        localStorage.setItem('dark-mode-enabled', isDark ? '1' : '0');
+      });
+    })();
+  </script>
+
+  <!-- Scripts -->
+  <!-- Use CDN JS to ensure Bootstrap collapse/toggler works across pages.
+    In production you can switch back to local files if preferred.
+  -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

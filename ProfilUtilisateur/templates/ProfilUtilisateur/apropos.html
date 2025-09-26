@@ -1,0 +1,39 @@
+{% extends 'ProfilUtilisateur/base.html' %}
+
+{% block title %}À propos - MOYA{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="jumbotron bg-info text-white text-center shadow rounded">
+    <h1 class="display-4">À propos de MOYA</h1>
+    <p class="lead">Découvrez notre mission, nos valeurs et notre engagement envers nos utilisateurs.</p>
+    <hr class="bg-light">
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <h3 class="text-white"><i class="fas fa-bullseye"></i> Notre Mission</h3>
+      <p>MOYA vise à révolutionner l'expérience utilisateur en fournissant des outils intuitifs, sécurisés et innovants.</p>
+    </div>
+    <div class="col-md-6">
+      <h3 class="text-warning"><i class="fas fa-handshake"></i> Nos Valeurs</h3>
+      <ul class="list-group">
+        <li class="list-group-item">💡 Innovation</li>
+        <li class="list-group-item">🔒 Sécurité</li>
+        <li class="list-group-item">👥 Communauté</li>
+        <li class="list-group-item">🌍 Impact social</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Informations sur MOYA -->
+  <div class="card mt-5 shadow">
+    <div class="card-body text-center">
+      <h3 class="text-primary"><i class="fas fa-building"></i> Informations sur MOYA</h3>
+      <p><strong>Nom de l'entreprise :</strong> MOYA</p>
+      <p><strong>Adresse :</strong> République Démocratique du Congo, Haut-Katanga, Kipushi</p>
+      <p><strong>Contact :</strong> 📞 +243 970 248 155</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

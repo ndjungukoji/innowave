@@ -1,0 +1,29 @@
+{% extends 'ProfilUtilisateur/base.html' %}
+
+{% block title %}Historique des connexions{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4 text-center text-primary">Historique des Connexions</h2>
+  {% if historiques %}
+  <table class="table table-striped shadow">
+    <thead class="thead-dark">
+      <tr>
+        <th>Date</th>
+        <th>Adresse IP</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for historique in historiques %}
+      <tr>
+        <td>{{ historique.date }}</td>
+        <td>{{ historique.adresse_ip }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="text-center text-muted">Aucun historique de connexion trouvé.</p>
+  {% endif %}
+</div>
+{% endblock %}
